@@ -8,6 +8,7 @@ const cypress = require('cypress')
 const debug = require('debug')('cypress-expect')
 const arg = require('arg')
 
+// remove all our arguments to let Cypress only deal with its arguments
 const args = arg({
   '--passing': Number, // number of total passing tests to expect
 })
@@ -21,10 +22,13 @@ if (args['--passing'] < 0) {
 }
 
 const parseArguments = async () => {
-  // remove all our arguments to let Cypress only deal with its arguments
   const cliArgs = args._
   if (cliArgs[0] !== 'cypress') {
     cliArgs.unshift('cypress')
+  }
+
+  if (cliArgs[1] !== 'run') {
+    cliArgs.splice(1, 0, 'run')
   }
 
   debug('parsing Cypress CLI %o', cliArgs)
@@ -60,6 +64,7 @@ parseArguments()
     }
   })
   .catch((e) => {
+    console.log('error: %s', e.message)
     console.error(e)
     process.exit(1)
   })

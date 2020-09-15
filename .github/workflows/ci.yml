@@ -9,6 +9,10 @@ jobs:
 
       - name: Cypress run 🧪
         uses: cypress-io/github-action@v2
+        with:
+          # run Cypress via this script
+          # and verify that exactly 3 tests are passing
+          command: node . run --passing 3
 
       - name: Semantic Release 🚀
         uses: cycjimmy/semantic-release-action@v2

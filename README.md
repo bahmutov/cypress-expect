@@ -18,6 +18,12 @@ The rest of the arguments is parsed using [Cypress CLI method](https://on.cypres
 
 **Note:** when running in parallel mode where the tests are split, this module would not work, since only a subset of specs will execute on the current machine.
 
+## Options
+
+`--passing <N>` checks if the total number of passing tests is `<N>`
+
+`--min-passing <N>` checks if the total number of passing tests is `>= <N>`
+
 ## Debugging
 
 Run this script with environment variable `DEBUG=cypress-expect` to see verbose logs

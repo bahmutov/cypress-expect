@@ -8,16 +8,33 @@ const cypress = require('cypress')
 const debug = require('debug')('cypress-expect')
 const arg = require('arg')
 
+const isValidPassing = (x) => typeof x === 'number' && x > 0
+
 // remove all our arguments to let Cypress only deal with its arguments
 const args = arg({
   '--passing': Number, // number of total passing tests to expect
+  '--min-passing': Number, // at least this number of passing tests
 })
-if (typeof args['--passing'] !== 'number') {
-  console.error('expected a number of --passing tests', args['--passing'])
-  process.exit(1)
+
+if ('--passing' in args) {
+  if (!isValidPassing(args['--passing'])) {
+    console.error('expected a number of --passing tests', args['--passing'])
+    process.exit(1)
+  }
 }
-if (args['--passing'] < 0) {
-  console.error('expected a number of --passing tests', args['--passing'])
+
+if ('--min-passing' in args) {
+  if (!isValidPassing(args['--min-passing'])) {
+    console.error(
+      'expected a number of --min-passing tests',
+      args['--min-passing'],
+    )
+    process.exit(1)
+  }
+}
+
+if ('--passing' in args && '--min-passing' in args) {
+  console.error('Cannot specify both --passing and --min-passing options')
   process.exit(1)
 }
 

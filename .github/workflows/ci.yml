@@ -7,14 +7,17 @@ jobs:
       - name: Checkout 🛎
         uses: actions/checkout@v2
 
-      - name: Cypress run 🧪
+      - name: Check --passing 🧪
         uses: cypress-io/github-action@v2
         with:
           # run Cypress via this script
           # and verify that exactly 3 tests are passing
-          command: |
-            node . run --passing 3
-            node . run --min-passing 1
+          command: node . run --passing 3
+
+      - name: Check --min-passing 🧪
+        uses: cypress-io/github-action@v2
+        with:
+          command: node . run --min-passing 1
 
       - name: Semantic Release 🚀
         uses: cycjimmy/semantic-release-action@v2

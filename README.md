@@ -1,4 +1,4 @@
-# cypress-expect [![ci status][ci image]][ci url]
+# cypress-expect [![ci status][ci image]][ci url] [![renovate-app badge][renovate-badge]][renovate-app]
 
 > Cypress CLI wrapper where you can specify the total number of expected tests
 
@@ -30,3 +30,5 @@ Run this script with environment variable `DEBUG=cypress-expect` to see verbose 
 
 [ci image]: https://github.com/bahmutov/cypress-expect/workflows/ci/badge.svg?branch=main
 [ci url]: https://github.com/bahmutov/cypress-expect/actions
+[renovate-badge]: https://img.shields.io/badge/renovate-app-blue.svg
+[renovate-app]: https://renovateapp.com/

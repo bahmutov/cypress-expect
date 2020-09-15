@@ -16,14 +16,17 @@ const args = arg({
   '--min-passing': Number, // at least this number of passing tests
 })
 
-if ('--passing' in args) {
+const isPassingSpecified = '--passing' in args
+const isMinPassingSpecified = '--min-passing' in args
+
+if (isPassingSpecified) {
   if (!isValidPassing(args['--passing'])) {
     console.error('expected a number of --passing tests', args['--passing'])
     process.exit(1)
   }
 }
 
-if ('--min-passing' in args) {
+if (isMinPassingSpecified) {
   if (!isValidPassing(args['--min-passing'])) {
     console.error(
       'expected a number of --min-passing tests',
@@ -33,7 +36,12 @@ if ('--min-passing' in args) {
   }
 }
 
-if ('--passing' in args && '--min-passing' in args) {
+if (isPassingSpecified && isMinPassingSpecified) {
+  console.error('Cannot specify both --passing and --min-passing options')
+  process.exit(1)
+}
+
+if (!isPassingSpecified && !isMinPassingSpecified) {
   console.error('Cannot specify both --passing and --min-passing options')
   process.exit(1)
 }
@@ -65,19 +73,38 @@ parseArguments()
       process.exit(1)
     }
 
-    if (runResults.totalFailed) {
-      console.error('%d test(s) failed', runResults.totalFailed)
-      process.exit(runResults.totalFailed)
+    const totals = {
+      failed: runResults.totalFailed,
+      passed: runResults.totalPassed,
+    }
+    debug('test totals %o', totals)
+
+    if (totals.failed) {
+      console.error('%d test(s) failed', totals.failed)
+      process.exit(totals.failed)
     }
 
-    // make sure the expected number of tests executed
-    if (runResults.totalPassed !== args['--passing']) {
-      console.error(
-        'expected %d passing tests, got %d',
-        args['--passing'],
-        runResults.totalPassed,
-      )
-      process.exit(1)
+    if (isPassingSpecified) {
+      // make sure the expected number of tests executed
+      if (totals.passed !== args['--passing']) {
+        console.error(
+          'ERROR: expected %d passing tests, got %d',
+          args['--passing'],
+          totals.passed,
+        )
+        process.exit(1)
+      }
+    }
+
+    if (isMinPassingSpecified) {
+      if (totals.passed < args['--min-passing']) {
+        console.error(
+          'ERROR: expected at least %d passing tests, got %d',
+          args['--min-passing'],
+          totals.passed,
+        )
+        process.exit(1)
+      }
     }
   })
   .catch((e) => {

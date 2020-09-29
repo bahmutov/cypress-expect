@@ -68,42 +68,44 @@ parseArguments()
   })
   .then((runResults) => {
     // see https://on.cypress.io/module-api
-    if (runResults.failures) {
+    if (runResults.status === 'failed' && runResults.failures) {
       console.error(runResults.message)
       process.exit(1)
     }
 
-    const totals = {
-      failed: runResults.totalFailed,
-      passed: runResults.totalPassed,
-    }
-    debug('test totals %o', totals)
-
-    if (totals.failed) {
-      console.error('%d test(s) failed', totals.failed)
-      process.exit(totals.failed)
-    }
-
-    if (isPassingSpecified) {
-      // make sure the expected number of tests executed
-      if (totals.passed !== args['--passing']) {
-        console.error(
-          'ERROR: expected %d passing tests, got %d',
-          args['--passing'],
-          totals.passed,
-        )
-        process.exit(1)
+    if (runResults.status === 'finished') {
+      const totals = {
+        failed: runResults.totalFailed,
+        passed: runResults.totalPassed,
       }
-    }
+      debug('test totals %o', totals)
 
-    if (isMinPassingSpecified) {
-      if (totals.passed < args['--min-passing']) {
-        console.error(
-          'ERROR: expected at least %d passing tests, got %d',
-          args['--min-passing'],
-          totals.passed,
-        )
-        process.exit(1)
+      if (totals.failed) {
+        console.error('%d test(s) failed', totals.failed)
+        process.exit(totals.failed)
+      }
+
+      if (isPassingSpecified) {
+        // make sure the expected number of tests executed
+        if (totals.passed !== args['--passing']) {
+          console.error(
+            'ERROR: expected %d passing tests, got %d',
+            args['--passing'],
+            totals.passed,
+          )
+          process.exit(1)
+        }
+      }
+
+      if (isMinPassingSpecified) {
+        if (totals.passed < args['--min-passing']) {
+          console.error(
+            'ERROR: expected at least %d passing tests, got %d',
+            args['--min-passing'],
+            totals.passed,
+          )
+          process.exit(1)
+        }
       }
     }
   })

@@ -9,7 +9,7 @@
     "index.js"
   ],
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node . run --passing 3",
     "semantic-release": "semantic-release"
   },
   "repository": {
@@ -28,7 +28,7 @@
   "homepage": "https://github.com/bahmutov/cypress-expect#readme",
   "devDependencies": {
     "@types/node": "14.10.1",
-    "cypress": "5.2.0",
+    "cypress": "5.3.0",
     "prettier": "2.1.1",
     "semantic-release": "^17.1.1"
   },
@@ -37,7 +37,7 @@
     "debug": "4.2.0"
   },
   "peerDependencies": {
-    "cypress": "*"
+    "cypress": ">=5.3.0"
   },
   "release": {
     "branches": "main"

@@ -46,6 +46,11 @@ if (!isPassingSpecified && !isMinPassingSpecified) {
   process.exit(1)
 }
 
+debug('params %o', {
+  passing: args['--passing'],
+  minPassing: args['--min-passing'],
+})
+
 const parseArguments = async () => {
   const cliArgs = args._
   if (cliArgs[0] !== 'cypress') {
@@ -67,6 +72,8 @@ parseArguments()
     return cypress.run(options)
   })
   .then((runResults) => {
+    debug('run status %s', runResults.status)
+
     // see https://on.cypress.io/module-api
     if (runResults.status === 'failed' && runResults.failures) {
       console.error(runResults.message)

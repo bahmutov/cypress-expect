@@ -14,10 +14,12 @@ const isValidPassing = (x) => typeof x === 'number' && x > 0
 const args = arg({
   '--passing': Number, // number of total passing tests to expect
   '--min-passing': Number, // at least this number of passing tests
+  '--pending': Number, // number of pending tests to expect
 })
 
 const isPassingSpecified = '--passing' in args
 const isMinPassingSpecified = '--min-passing' in args
+const isPendingSpecified = '--pending' in args
 
 if (isPassingSpecified) {
   if (!isValidPassing(args['--passing'])) {
@@ -49,6 +51,7 @@ if (!isPassingSpecified && !isMinPassingSpecified) {
 debug('params %o', {
   passing: args['--passing'],
   minPassing: args['--min-passing'],
+  pending: args['--pending'],
 })
 
 const parseArguments = async () => {
@@ -93,6 +96,7 @@ parseArguments()
       const totals = {
         failed: runResults.totalFailed,
         passed: runResults.totalPassed,
+        pending: runResults.totalPending,
       }
       debug('test totals %o', totals)
 
@@ -119,6 +123,17 @@ parseArguments()
             'ERROR: expected at least %d passing tests, got %d',
             args['--min-passing'],
             totals.passed,
+          )
+          process.exit(1)
+        }
+      }
+
+      if (isPendingSpecified) {
+        if (totals.pending !== args['--pending']) {
+          console.error(
+            'ERROR: expected %d pending tests, got %d',
+            args['--pending'],
+            totals.pending,
           )
           process.exit(1)
         }

@@ -73,6 +73,15 @@ parseArguments()
   })
   .then((runResults) => {
     debug('run status %s', runResults.status)
+    if (!runResults.status) {
+      // @ts-ignore
+      if (runResults.failures) {
+        runResults.status = 'failed'
+      } else {
+        runResults.status = 'finished'
+      }
+      debug('set run status %s', runResults.status)
+    }
 
     // see https://on.cypress.io/module-api
     if (runResults.status === 'failed' && runResults.failures) {

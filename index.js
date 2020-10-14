@@ -16,10 +16,26 @@ const args = arg({
   '--min-passing': Number, // at least this number of passing tests
   '--pending': Number, // number of pending tests to expect
 })
+debug('args %o', args)
 
 const isPassingSpecified = '--passing' in args
 const isMinPassingSpecified = '--min-passing' in args
 const isPendingSpecified = '--pending' in args
+const noOptionsSpecified =
+  !isPassingSpecified && !isMinPassingSpecified && !isPendingSpecified
+
+debug('specified options %o', {
+  isPassingSpecified,
+  isMinPassingSpecified,
+  isPendingSpecified,
+  noOptionsSpecified,
+})
+
+if (noOptionsSpecified) {
+  console.error('Need to specify at least one parameter:')
+  console.error('--passing or --min-passing or --pending')
+  process.exit(1)
+}
 
 if (isPassingSpecified) {
   if (!isValidPassing(args['--passing'])) {

@@ -11,11 +11,17 @@ const arg = require('arg')
 const isValidPassing = (x) => typeof x === 'number' && x > 0
 
 // remove all our arguments to let Cypress only deal with its arguments
-const args = arg({
-  '--passing': Number, // number of total passing tests to expect
-  '--min-passing': Number, // at least this number of passing tests
-  '--pending': Number, // number of pending tests to expect
-})
+const args = arg(
+  {
+    '--passing': Number, // number of total passing tests to expect
+    '--min-passing': Number, // at least this number of passing tests
+    '--pending': Number, // number of pending tests to expect
+  },
+  {
+    // allow other flags to be present - to be sent to Cypress CLI
+    permissive: true,
+  },
+)
 debug('args %o', args)
 
 const isPassingSpecified = '--passing' in args

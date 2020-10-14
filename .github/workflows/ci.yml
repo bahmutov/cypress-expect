@@ -19,6 +19,11 @@ jobs:
         with:
           command: node . run --min-passing 1
 
+      - name: Check other flags are parsed 🧪
+        uses: cypress-io/github-action@v2
+        with:
+          command: node . run --passing 3 --spec '**/spec.js'
+
       - name: Semantic Release 🚀
         uses: cycjimmy/semantic-release-action@v2
         env:

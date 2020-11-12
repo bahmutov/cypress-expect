@@ -15,6 +15,7 @@ const args = arg(
   {
     '--passing': Number, // number of total passing tests to expect
     '--min-passing': Number, // at least this number of passing tests
+    '--failing': Number, // number of failing tests to expect
     '--pending': Number, // number of pending tests to expect
   },
   {
@@ -26,20 +27,25 @@ debug('args %o', args)
 
 const isPassingSpecified = '--passing' in args
 const isMinPassingSpecified = '--min-passing' in args
+const isFailingSpecified = '--failing' in args
 const isPendingSpecified = '--pending' in args
 const noOptionsSpecified =
-  !isPassingSpecified && !isMinPassingSpecified && !isPendingSpecified
+  !isPassingSpecified &&
+  !isMinPassingSpecified &&
+  !isPendingSpecified &&
+  !isFailingSpecified
 
 debug('specified options %o', {
   isPassingSpecified,
   isMinPassingSpecified,
+  isFailingSpecified,
   isPendingSpecified,
   noOptionsSpecified,
 })
 
 if (noOptionsSpecified) {
   console.error('Need to specify at least one parameter:')
-  console.error('--passing or --min-passing or --pending')
+  console.error('--passing or --min-passing or --failing or --pending')
   process.exit(1)
 }
 
@@ -60,12 +66,14 @@ if (isMinPassingSpecified) {
   }
 }
 
-if (isPassingSpecified && isMinPassingSpecified) {
-  console.error('Cannot specify both --passing and --min-passing options')
-  process.exit(1)
+if (isFailingSpecified) {
+  if (!isValidPassing(args['--failing'])) {
+    console.error('expected a number of --failing tests', args['--failing'])
+    process.exit(1)
+  }
 }
 
-if (!isPassingSpecified && !isMinPassingSpecified) {
+if (isPassingSpecified && isMinPassingSpecified) {
   console.error('Cannot specify both --passing and --min-passing options')
   process.exit(1)
 }
@@ -73,6 +81,7 @@ if (!isPassingSpecified && !isMinPassingSpecified) {
 debug('params %o', {
   passing: args['--passing'],
   minPassing: args['--min-passing'],
+  failing: args['--failing'],
   pending: args['--pending'],
 })
 
@@ -122,9 +131,21 @@ parseArguments()
       }
       debug('test totals %o', totals)
 
-      if (totals.failed) {
-        console.error('%d test(s) failed', totals.failed)
-        process.exit(totals.failed)
+      if (isFailingSpecified) {
+        if (totals.failed !== args['--failing']) {
+          console.error(
+            'ERROR: expected %d failing tests, got %d',
+            args['--failing'],
+            totals.failed,
+          )
+          process.exit(1)
+        }
+      } else {
+        // any unexpected failed tests are bad
+        if (totals.failed) {
+          console.error('%d test(s) failed', totals.failed)
+          process.exit(totals.failed)
+        }
       }
 
       if (isPassingSpecified) {

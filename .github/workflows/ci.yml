@@ -28,6 +28,13 @@ jobs:
           install: false
           command: node . run --passing 3 --spec '**/spec.js'
 
+      - name: Check --failing 🧪
+        uses: cypress-io/github-action@v2
+        with:
+          # we have already installed all dependencies above
+          install: false
+          command: node . run --passing 1 --failing 1 --config integrationFolder=cypress/failing
+
       - name: Semantic Release 🚀
         uses: cycjimmy/semantic-release-action@v2
         env:

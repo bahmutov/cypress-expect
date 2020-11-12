@@ -24,6 +24,8 @@ The rest of the arguments is parsed using [Cypress CLI method](https://on.cypres
 
 `--min-passing <N>` checks if the total number of passing tests is `>= <N>`
 
+`--failing <N>` checks if the total number of failing tests is `<N>`
+
 `--pending <N>` checks if the total number of pending tests is `<N>`
 
 ## Debugging

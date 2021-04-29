@@ -18,6 +18,8 @@ The rest of the arguments is parsed using [Cypress CLI method](https://on.cypres
 
 **Note:** when running in parallel mode where the tests are split, this module would not work, since only a subset of specs will execute on the current machine.
 
+**Tip:** Cypress has 4 test statuses explained in the [Writing and Organizing Tests](http://on.cypress.io/writing-and-organizing-tests#Test-statuses) guide.
+
 ## Options
 
 `--passing <N>` checks if the total number of passing tests is `<N>`

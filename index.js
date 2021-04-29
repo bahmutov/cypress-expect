@@ -7,7 +7,9 @@
 const cypress = require('cypress')
 const debug = require('debug')('cypress-expect')
 const arg = require('arg')
+const fs = require('fs')
 
+const REPO_URL = 'https://github.com/bahmutov/cypress-expect'
 const CLI_HELP_URL = 'https://github.com/bahmutov/cypress-expect#options'
 const cliHelpMessage = `see ${CLI_HELP_URL}`
 
@@ -104,12 +106,29 @@ if (isPassingSpecified && isMinPassingSpecified) {
   process.exit(1)
 }
 
+if (isExpectSpecified) {
+  const filename = args['--expect']
+  if (!fs.existsSync(filename)) {
+    console.error('Cannot find file specified using --expect option')
+    console.error('filename: "%s"', filename)
+    console.error(cliHelpMessage)
+    process.exit(1)
+  }
+}
+
 debug('params %o', {
   passing: args['--passing'],
   minPassing: args['--min-passing'],
   failing: args['--failing'],
   pending: args['--pending'],
+  expect: args['--expect'],
 })
+
+const getExpectedTestStatuses = (filename) => {
+  const text = fs.readFileSync(filename, 'utf-8')
+  const json = JSON.parse(text)
+  return json
+}
 
 const parseArguments = async () => {
   const cliArgs = args._
@@ -146,6 +165,17 @@ parseArguments()
     // see https://on.cypress.io/module-api
     if (runResults.status === 'failed' && runResults.failures) {
       console.error(runResults.message)
+      process.exit(1)
+    }
+
+    if (runResults.status !== 'finished') {
+      console.error(
+        'cypress-error: Hmm, unknown run status "%s"',
+        runResults.status,
+      )
+      console.error('cypress-error: not sure how to proceed')
+      console.error('cypress-error: seek help at %s', REPO_URL)
+      console.error('cypress-error: exiting with an error')
       process.exit(1)
     }
 

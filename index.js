@@ -234,7 +234,7 @@ parseArguments()
           if (test.state !== 'passed') {
             didNotMatch += 1
             console.log(
-              'expected (implicit) the test "%s" to pass, was %s',
+              'cypress-expect: expected implicitly the test "%s" to pass, got %s',
               test.title.join(' / '),
               test.state,
             )
@@ -244,7 +244,7 @@ parseArguments()
           if (test.state !== normalized) {
             didNotMatch += 1
             console.log(
-              'expected the test "%s" to be %s, was %s',
+              'cypress-expect: expected the test "%s" to be %s, got %s',
               test.title.join(' / '),
               normalized,
               test.state,
@@ -255,10 +255,12 @@ parseArguments()
 
       if (didNotMatch) {
         console.error(
-          '%d %s did not match the expected state',
+          'cypress-expect: %d %s did not match the expected state from %s',
           didNotMatch,
           didNotMatch === 1 ? 'test' : 'tests',
+          args['--expect'],
         )
+        console.error('')
         process.exit(1)
       }
 

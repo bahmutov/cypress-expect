@@ -179,63 +179,61 @@ parseArguments()
       process.exit(1)
     }
 
-    if (runResults.status === 'finished') {
-      const totals = {
-        failed: runResults.totalFailed,
-        passed: runResults.totalPassed,
-        pending: runResults.totalPending,
-      }
-      debug('test totals %o', totals)
+    const totals = {
+      failed: runResults.totalFailed,
+      passed: runResults.totalPassed,
+      pending: runResults.totalPending,
+    }
+    debug('test totals %o', totals)
 
-      if (isFailingSpecified) {
-        if (totals.failed !== args['--failing']) {
-          console.error(
-            'ERROR: expected %d failing tests, got %d',
-            args['--failing'],
-            totals.failed,
-          )
-          process.exit(1)
-        }
-      } else {
-        // any unexpected failed tests are bad
-        if (totals.failed) {
-          console.error('%d test(s) failed', totals.failed)
-          process.exit(totals.failed)
-        }
+    if (isFailingSpecified) {
+      if (totals.failed !== args['--failing']) {
+        console.error(
+          'ERROR: expected %d failing tests, got %d',
+          args['--failing'],
+          totals.failed,
+        )
+        process.exit(1)
       }
-
-      if (isPassingSpecified) {
-        // make sure the expected number of tests executed
-        if (totals.passed !== args['--passing']) {
-          console.error(
-            'ERROR: expected %d passing tests, got %d',
-            args['--passing'],
-            totals.passed,
-          )
-          process.exit(1)
-        }
+    } else {
+      // any unexpected failed tests are bad
+      if (totals.failed) {
+        console.error('%d test(s) failed', totals.failed)
+        process.exit(totals.failed)
       }
+    }
 
-      if (isMinPassingSpecified) {
-        if (totals.passed < args['--min-passing']) {
-          console.error(
-            'ERROR: expected at least %d passing tests, got %d',
-            args['--min-passing'],
-            totals.passed,
-          )
-          process.exit(1)
-        }
+    if (isPassingSpecified) {
+      // make sure the expected number of tests executed
+      if (totals.passed !== args['--passing']) {
+        console.error(
+          'ERROR: expected %d passing tests, got %d',
+          args['--passing'],
+          totals.passed,
+        )
+        process.exit(1)
       }
+    }
 
-      if (isPendingSpecified) {
-        if (totals.pending !== args['--pending']) {
-          console.error(
-            'ERROR: expected %d pending tests, got %d',
-            args['--pending'],
-            totals.pending,
-          )
-          process.exit(1)
-        }
+    if (isMinPassingSpecified) {
+      if (totals.passed < args['--min-passing']) {
+        console.error(
+          'ERROR: expected at least %d passing tests, got %d',
+          args['--min-passing'],
+          totals.passed,
+        )
+        process.exit(1)
+      }
+    }
+
+    if (isPendingSpecified) {
+      if (totals.pending !== args['--pending']) {
+        console.error(
+          'ERROR: expected %d pending tests, got %d',
+          args['--pending'],
+          totals.pending,
+        )
+        process.exit(1)
       }
     }
   })

@@ -8,12 +8,35 @@ const cypress = require('cypress')
 const debug = require('debug')('cypress-expect')
 const arg = require('arg')
 const fs = require('fs')
+const R = require('ramda')
 
 const REPO_URL = 'https://github.com/bahmutov/cypress-expect'
 const CLI_HELP_URL = 'https://github.com/bahmutov/cypress-expect#options'
 const cliHelpMessage = `see ${CLI_HELP_URL}`
 
 const isValidPassing = (x) => typeof x === 'number' && x > 0
+
+/**
+ * Normalizes different forms of test status to
+ * @see https://on.cypress.io/writing-and-organizing-tests#Test-statuses
+ */
+const normalizeTestState = (s) => {
+  if (s === 'passing' || s === 'pass' || s === 'passes' || s === 'passed') {
+    return 'passed'
+  }
+  if (s === 'failing' || s === 'fail' || s === 'fails' || s === 'failed') {
+    return 'failed'
+  }
+  if (s === 'pend' || s === 'pending') {
+    return 'pending'
+  }
+  if (s === 'skip' || s === 'skipping' || s === 'skipped') {
+    return 'skipped'
+  }
+  console.error('unknown test state name "%s"', s)
+
+  return s
+}
 
 // remove all our arguments to let Cypress only deal with its arguments
 const args = arg(
@@ -177,6 +200,70 @@ parseArguments()
       console.error('cypress-error: seek help at %s', REPO_URL)
       console.error('cypress-error: exiting with an error')
       process.exit(1)
+    }
+
+    if (isExpectSpecified) {
+      const expectedTestStatuses = getExpectedTestStatuses(args['--expect'])
+      debug('expected test statuses %o', expectedTestStatuses)
+
+      debug('test runs %o', runResults.runs)
+      // collect every test result
+      const tests = []
+      runResults.runs.forEach((runResult) => {
+        runResult.tests.forEach((testResult) => {
+          tests.push({
+            // title is an array with strings
+            // from the outer suite title, all the way to the test title
+            title: testResult.title,
+            state: testResult.state,
+          })
+        })
+      })
+      debug('test results %o', tests)
+
+      // match every test result with expected test result
+      // if not found, the only acceptable test state is passing
+      let didNotMatch = 0
+
+      tests.forEach((test) => {
+        const expectedTestStatus = R.path(test.title, expectedTestStatuses)
+        if (!expectedTestStatus) {
+          debug('missing expected state for test "%o"', test.title)
+
+          // cannot find the expected test status, should be passing
+          if (test.state !== 'passed') {
+            didNotMatch += 1
+            console.log(
+              'expected (implicit) the test "%s" to pass, was %s',
+              test.title.join(' / '),
+              test.state,
+            )
+          }
+        } else {
+          const normalized = normalizeTestState(expectedTestStatus)
+          if (test.state !== normalized) {
+            didNotMatch += 1
+            console.log(
+              'expected the test "%s" to be %s, was %s',
+              test.title.join(' / '),
+              normalized,
+              test.state,
+            )
+          }
+        }
+      })
+
+      if (didNotMatch) {
+        console.error(
+          '%d %s did not match the expected state',
+          didNotMatch,
+          didNotMatch === 1 ? 'test' : 'tests',
+        )
+        process.exit(1)
+      }
+
+      // nothing else to do
+      return
     }
 
     const totals = {

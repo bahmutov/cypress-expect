@@ -227,6 +227,7 @@ parseArguments()
 
       tests.forEach((test) => {
         const expectedTestStatus = R.path(test.title, expectedTestStatuses)
+
         if (!expectedTestStatus) {
           debug('missing expected state for test "%o"', test.title)
 
@@ -241,6 +242,12 @@ parseArguments()
           }
         } else {
           const normalized = normalizeTestState(expectedTestStatus)
+          debug(
+            'test "%s" should status "%s"',
+            test.title.join(' / '),
+            normalized,
+          )
+
           if (test.state !== normalized) {
             didNotMatch += 1
             console.log(

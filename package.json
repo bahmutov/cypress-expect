@@ -10,7 +10,9 @@
   ],
   "scripts": {
     "test": "node . run --passing 3",
-    "semantic-release": "semantic-release"
+    "semantic-release": "semantic-release",
+    "test:expect:1": "node . run --expect ./cypress/integration/expected.json",
+    "test:expect:2": "node . run --expect ./cypress/failing/expected.json --config integrationFolder=cypress/failing"
   },
   "repository": {
     "type": "git",
@@ -34,10 +36,11 @@
   },
   "dependencies": {
     "arg": "4.1.3",
-    "debug": "4.3.1"
+    "debug": "4.3.1",
+    "ramda": "0.27.1"
   },
   "peerDependencies": {
-    "cypress": ">=5.3.0 || 6.9.1"
+    "cypress": ">=5.3.0"
   },
   "release": {
     "branches": "main"

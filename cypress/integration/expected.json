@@ -1,0 +1,7 @@
+{
+  "cypress-expect": {
+    "first": "passing",
+    "second": "passing",
+    "third": "passing"
+  }
+}

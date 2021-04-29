@@ -1,0 +1,6 @@
+{
+  "1 passing 1 failing": {
+    "passes": "passing",
+    "fails": "failing"
+  }
+}

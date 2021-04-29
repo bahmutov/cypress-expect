@@ -35,6 +35,12 @@ jobs:
           install: false
           command: node . run --passing 1 --failing 1 --config integrationFolder=cypress/failing
 
+      - name: --expect example 1 💎
+        run: npm run test:expect:1
+
+      - name: --expect example 2 💎
+        run: npm run test:expect:2
+
       - name: Semantic Release 🚀
         uses: cycjimmy/semantic-release-action@v2
         env:

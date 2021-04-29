@@ -8,6 +8,9 @@ const cypress = require('cypress')
 const debug = require('debug')('cypress-expect')
 const arg = require('arg')
 
+const CLI_HELP_URL = 'https://github.com/bahmutov/cypress-expect#options'
+const cliHelpMessage = `see ${CLI_HELP_URL}`
+
 const isValidPassing = (x) => typeof x === 'number' && x > 0
 
 // remove all our arguments to let Cypress only deal with its arguments
@@ -17,6 +20,7 @@ const args = arg(
     '--min-passing': Number, // at least this number of passing tests
     '--failing': Number, // number of failing tests to expect
     '--pending': Number, // number of pending tests to expect
+    '--expect': String, // filename of JSON file with test names and statuses
   },
   {
     // allow other flags to be present - to be sent to Cypress CLI
@@ -29,29 +33,48 @@ const isPassingSpecified = '--passing' in args
 const isMinPassingSpecified = '--min-passing' in args
 const isFailingSpecified = '--failing' in args
 const isPendingSpecified = '--pending' in args
+const isExpectSpecified = '--expect' in args
 const noOptionsSpecified =
   !isPassingSpecified &&
   !isMinPassingSpecified &&
   !isPendingSpecified &&
-  !isFailingSpecified
+  !isFailingSpecified &&
+  !isExpectSpecified
 
 debug('specified options %o', {
   isPassingSpecified,
   isMinPassingSpecified,
   isFailingSpecified,
   isPendingSpecified,
+  isExpectSpecified,
   noOptionsSpecified,
 })
 
 if (noOptionsSpecified) {
   console.error('Need to specify at least one parameter:')
-  console.error('--passing or --min-passing or --failing or --pending')
+  console.error(
+    '--passing or --min-passing or --failing or --pending or --expect',
+  )
+  console.error(cliHelpMessage)
+  process.exit(1)
+}
+
+const isNumberOptionSpecified =
+  isPassingSpecified ||
+  isMinPassingSpecified ||
+  isFailingSpecified ||
+  isPendingSpecified
+if (isExpectSpecified && isNumberOptionSpecified) {
+  console.error('You used --expect with some other option')
+  console.error('--expect <filename> can be the only option by itself')
+  console.error(cliHelpMessage)
   process.exit(1)
 }
 
 if (isPassingSpecified) {
   if (!isValidPassing(args['--passing'])) {
     console.error('expected a number of --passing tests', args['--passing'])
+    console.error(cliHelpMessage)
     process.exit(1)
   }
 }
@@ -62,6 +85,7 @@ if (isMinPassingSpecified) {
       'expected a number of --min-passing tests',
       args['--min-passing'],
     )
+    console.error(cliHelpMessage)
     process.exit(1)
   }
 }
@@ -69,12 +93,14 @@ if (isMinPassingSpecified) {
 if (isFailingSpecified) {
   if (!isValidPassing(args['--failing'])) {
     console.error('expected a number of --failing tests', args['--failing'])
+    console.error(cliHelpMessage)
     process.exit(1)
   }
 }
 
 if (isPassingSpecified && isMinPassingSpecified) {
   console.error('Cannot specify both --passing and --min-passing options')
+  console.error(cliHelpMessage)
   process.exit(1)
 }
 

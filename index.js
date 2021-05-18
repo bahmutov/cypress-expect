@@ -9,6 +9,7 @@ const debug = require('debug')('cypress-expect')
 const arg = require('arg')
 const fs = require('fs')
 const R = require('ramda')
+const allPaths = require('@bahmutov/all-paths')
 
 const REPO_URL = 'https://github.com/bahmutov/cypress-expect'
 const CLI_HELP_URL = 'https://github.com/bahmutov/cypress-expect#options'
@@ -167,6 +168,34 @@ const parseArguments = async () => {
   return await cypress.cli.parseRunArguments(cliArgs)
 }
 
+// NOTE: modifies the object in place
+const removeEmptyLeaves = (json) => {
+  if (typeof json === 'string') {
+    return
+  }
+  Object.keys(json).forEach((key) => {
+    removeEmptyLeaves(json[key])
+    if (R.isEmpty(json[key])) {
+      delete json[key]
+    }
+  })
+
+  return json
+}
+
+const collectPaths = (json) => {
+  const list = allPaths(json)
+    // leave only paths that lead to the test status
+    // which is a string, effectively filtering out
+    // all outer suite names
+    .filter((path) => {
+      return typeof R.path(path, json) === 'string'
+    })
+  return list
+}
+
+const testTitle = (parts) => parts.join(' / ')
+
 parseArguments()
   .then((options) => {
     debug('parsed CLI options %o', options)
@@ -278,7 +307,16 @@ parseArguments()
         process.exit(1)
       }
 
-      console.log(expectedTestStatuses)
+      const removedEmpty = removeEmptyLeaves(expectedTestStatuses)
+      if (!R.isEmpty(removedEmpty)) {
+        console.error('cypress-expect: expected the find the following tests')
+        const titles = collectPaths(removedEmpty)
+          .map(testTitle)
+          .map((s) => '* ' + s)
+        console.error(titles.join('\n'))
+        console.error()
+        process.exit(1)
+      }
 
       // nothing else to do
       return

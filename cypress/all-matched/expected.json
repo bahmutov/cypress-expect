@@ -3,5 +3,7 @@
     "passes": "passing",
     "is pending": "pending",
     "unknown test": "passing"
-  }
+  },
+  "works": "pending",
+  "works unknown": "pending"
 }

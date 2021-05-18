@@ -203,11 +203,12 @@ parseArguments()
     }
 
     if (isExpectSpecified) {
-      const expectedTestStatuses = getExpectedTestStatuses(args['--expect'])
+      // a single object with expected test results
+      let expectedTestStatuses = getExpectedTestStatuses(args['--expect'])
       debug('expected test statuses %o', expectedTestStatuses)
 
       debug('test runs %o', runResults.runs)
-      // collect every test result
+      // collect every test result reported by Cypress
       const tests = []
       runResults.runs.forEach((runResult) => {
         runResult.tests.forEach((testResult) => {
@@ -241,6 +242,12 @@ parseArguments()
             )
           }
         } else {
+          // found the expected test record in the JSON file
+          // let's remove it - by the end of the matching the "expected"
+          // object will only have expected test results that were NOT
+          // present in the test results
+          expectedTestStatuses = R.dissocPath(test.title, expectedTestStatuses)
+
           const normalized = normalizeTestState(expectedTestStatus)
           debug(
             'test "%s" should status "%s"',
@@ -270,6 +277,8 @@ parseArguments()
         console.error('')
         process.exit(1)
       }
+
+      console.log(expectedTestStatuses)
 
       // nothing else to do
       return

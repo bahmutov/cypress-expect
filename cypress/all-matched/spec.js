@@ -7,3 +7,5 @@ describe('should have all expected tests', () => {
 
   it('is pending')
 })
+
+it('works')

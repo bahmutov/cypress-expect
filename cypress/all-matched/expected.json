@@ -1,9 +1,7 @@
 {
   "should have all expected tests": {
     "passes": "passing",
-    "is pending": "pending",
-    "unknown test": "passing"
+    "is pending": "pending"
   },
-  "works": "pending",
-  "works unknown": "pending"
+  "works": "pending"
 }

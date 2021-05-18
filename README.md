@@ -67,6 +67,14 @@ $ npx cypress-expect run --expect ./cypress/failing/expected.json
 
 **Tip 2:** you do not have to remember the precise name of each test status, the JSON file can use synonyms, like `passed`, `pass`, `passing`, `pass`.
 
+**Tip 3:** if there are more tests listed in the expected JSON file, the process will error with the list of tests not found
+
+```text
+cypress-expect: expected the find the following tests
+* login tests / first test
+* authentication test
+```
+
 ## Debugging
 
 Run this script with environment variable `DEBUG=cypress-expect` to see verbose logs

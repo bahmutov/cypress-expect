@@ -1,0 +1,7 @@
+{
+  "should have all expected tests": {
+    "passes": "passing",
+    "is pending": "pending"
+  },
+  "works": "pending"
+}

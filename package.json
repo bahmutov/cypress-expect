@@ -12,7 +12,8 @@
     "test": "node . run --passing 3",
     "semantic-release": "semantic-release",
     "test:expect:1": "node . run --expect ./cypress/integration/expected.json",
-    "test:expect:2": "node . run --expect ./cypress/failing/expected.json --config integrationFolder=cypress/failing"
+    "test:expect:2": "node . run --expect ./cypress/failing/expected.json --config integrationFolder=cypress/failing",
+    "test:expect:3": "node . run --expect ./cypress/all-matched/expected.json --config integrationFolder=cypress/all-matched"
   },
   "repository": {
     "type": "git",

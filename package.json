@@ -3,17 +3,18 @@
   "version": "0.0.0-development",
   "description": "Cypress CLI wrapper where you can specify the total number of expected tests",
   "bin": {
-    "cypress-expect": "index.js"
+    "cypress-expect": "bin/index.js"
   },
   "files": [
-    "index.js"
+    "bin",
+    "src"
   ],
   "scripts": {
-    "test": "node . run --passing 3",
+    "test": "node ./bin run --passing 3",
     "semantic-release": "semantic-release",
-    "test:expect:1": "node . run --expect ./cypress/integration/expected.json",
-    "test:expect:2": "node . run --expect ./cypress/failing/expected.json --config integrationFolder=cypress/failing",
-    "test:expect:3": "node . run --expect ./cypress/all-matched/expected.json --config integrationFolder=cypress/all-matched"
+    "test:expect:1": "node ./bin run --expect ./cypress/integration/expected.json",
+    "test:expect:2": "node ./bin run --expect ./cypress/failing/expected.json --config integrationFolder=cypress/failing",
+    "test:expect:3": "node ./bin run --expect ./cypress/all-matched/expected.json --config integrationFolder=cypress/all-matched"
   },
   "repository": {
     "type": "git",

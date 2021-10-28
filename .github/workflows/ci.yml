@@ -45,6 +45,10 @@ jobs:
       - name: --expect example 3 💎
         run: npm run test:expect:3
 
+      # for https://github.com/bahmutov/cypress-expect/issues/43
+      - name: --expect-exactly example 1 💎
+        run: npm run test:exactly:1
+
       - name: Semantic Release 🚀
         uses: cycjimmy/semantic-release-action@v2
         env:

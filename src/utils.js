@@ -218,8 +218,8 @@ const expectTestResults = (args) => (runResults) => {
 
       if (!expectedTestStatus) {
         console.error(
-          'cypress-expect: missing expected result for test "%o" from file %s',
-          test.title,
+          'cypress-expect: missing expected result for test "%s" from file %s',
+          test.title.join(' / '),
           args['--expect-exactly'],
         )
         console.error('')

@@ -32,6 +32,8 @@ The rest of the arguments is parsed using [Cypress CLI method](https://on.cypres
 
 `--expect <path/to/file.json>` checks test status against test names in a JSON file, see the details below
 
+`--expect-exactly <path/to/file.json>` checks test status against test names in a JSON file, see the details below
+
 ### expected test results
 
 The `--expect` option is interesting as it allows you to specify the expected test statuses in a JSON file. Each object key is a suite name, and individual string keys and values are the test names and statuses. For example, the following spec file [cypress/failing/spec.js](./cypress/failing/spec.js) has a suite with 2 tests, first should pass, and the second is expected to fail:
@@ -74,6 +76,10 @@ cypress-expect: expected the find the following tests
 * login tests / first test
 * authentication test
 ```
+
+### exactly expected test results
+
+When using `--expect <filename>` option, the test run might have _extra_ passing test results. When using `--expect-exactly <filename>` option, the test run cannot have _any_ additional test results. All tests results must match exactly what is listed in the file.
 
 ## Debugging
 

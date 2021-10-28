@@ -69,6 +69,7 @@ const expectTestResults = (args) => (runResults) => {
   const isFailingSpecified = '--failing' in args
   const isPendingSpecified = '--pending' in args
   const isExpectSpecified = '--expect' in args
+  const isExpectExactlySpecified = '--expect-exactly' in args
 
   debug('run status %s', runResults.status)
   if (!runResults.status) {
@@ -173,6 +174,82 @@ const expectTestResults = (args) => (runResults) => {
       console.error('')
       process.exit(1)
     }
+
+    const removedEmpty = removeEmptyLeaves(expectedTestStatuses)
+    if (!R.isEmpty(removedEmpty)) {
+      console.error('cypress-expect: expected the find the following tests')
+      const titles = collectPaths(removedEmpty)
+        .map(testTitle)
+        .map((s) => '* ' + s)
+      console.error(titles.join('\n'))
+      console.error()
+      process.exit(1)
+    }
+
+    // nothing else to do
+    return
+  }
+
+  if (isExpectExactlySpecified) {
+    // a single object with expected test results
+    let expectedTestStatuses = getExpectedTestStatuses(args['--expect-exactly'])
+    debug('expected test statuses %o', expectedTestStatuses)
+
+    debug('test runs %o', runResults.runs)
+    // collect every test result reported by Cypress
+    const tests = []
+    runResults.runs.forEach((runResult) => {
+      runResult.tests.forEach((testResult) => {
+        tests.push({
+          // title is an array with strings
+          // from the outer suite title, all the way to the test title
+          title: testResult.title,
+          state: testResult.state,
+        })
+      })
+    })
+    debug('test results %o', tests)
+
+    // match every test result with expected test result
+    let didNotMatch = 0
+
+    tests.forEach((test) => {
+      const expectedTestStatus = R.path(test.title, expectedTestStatuses)
+
+      if (!expectedTestStatus) {
+        console.error(
+          'cypress-expect: missing expected result for test "%o" from file %s',
+          test.title,
+          args['--expect-exactly'],
+        )
+        console.error('')
+        process.exit(1)
+      } else {
+        // found the expected test record in the JSON file
+        // let's remove it - by the end of the matching the "expected"
+        // object will only have expected test results that were NOT
+        // present in the test results
+        expectedTestStatuses = R.dissocPath(test.title, expectedTestStatuses)
+
+        const normalized = normalizeTestState(expectedTestStatus)
+        debug(
+          'test "%s" should status "%s"',
+          test.title.join(' / '),
+          normalized,
+        )
+
+        if (test.state !== normalized) {
+          console.error(
+            'cypress-expect: expected the test "%s" to be %s, got %s',
+            test.title.join(' / '),
+            normalized,
+            test.state,
+          )
+          console.error('')
+          process.exit(1)
+        }
+      }
+    })
 
     const removedEmpty = removeEmptyLeaves(expectedTestStatuses)
     if (!R.isEmpty(removedEmpty)) {

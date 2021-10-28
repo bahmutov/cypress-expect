@@ -23,6 +23,7 @@ const args = arg(
     '--failing': Number, // number of failing tests to expect
     '--pending': Number, // number of pending tests to expect
     '--expect': String, // filename of JSON file with test names and statuses
+    '--expect-exactly': String, // filename of JSON file with test names and statuses
   },
   {
     // allow other flags to be present - to be sent to Cypress CLI
@@ -36,12 +37,14 @@ const isMinPassingSpecified = '--min-passing' in args
 const isFailingSpecified = '--failing' in args
 const isPendingSpecified = '--pending' in args
 const isExpectSpecified = '--expect' in args
+const isExpectExactlySpecified = '--expect-exactly' in args
 const noOptionsSpecified =
   !isPassingSpecified &&
   !isMinPassingSpecified &&
   !isPendingSpecified &&
   !isFailingSpecified &&
-  !isExpectSpecified
+  !isExpectSpecified &&
+  !isExpectExactlySpecified
 
 debug('specified options %o', {
   isPassingSpecified,
@@ -49,6 +52,7 @@ debug('specified options %o', {
   isFailingSpecified,
   isPendingSpecified,
   isExpectSpecified,
+  isExpectExactlySpecified,
   noOptionsSpecified,
 })
 
@@ -116,12 +120,23 @@ if (isExpectSpecified) {
   }
 }
 
+if (isExpectExactlySpecified) {
+  const filename = args['--expect-exactly']
+  if (!fs.existsSync(filename)) {
+    console.error('Cannot find file specified using --expect-exactly option')
+    console.error('filename: "%s"', filename)
+    console.error(cliHelpMessage)
+    process.exit(1)
+  }
+}
+
 debug('params %o', {
   passing: args['--passing'],
   minPassing: args['--min-passing'],
   failing: args['--failing'],
   pending: args['--pending'],
   expect: args['--expect'],
+  expectExactly: args['--expect-exactly'],
 })
 
 const parseArguments = async () => {

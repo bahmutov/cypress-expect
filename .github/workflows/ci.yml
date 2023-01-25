@@ -5,35 +5,35 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Check --passing 🧪
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v5
         with:
           # run Cypress via this script
           # and verify that exactly 3 tests are passing
           command: node ./bin run --passing 3
 
       - name: Check --min-passing 🧪
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v5
         with:
           # we have already installed all dependencies above
           install: false
           command: node ./bin run --min-passing 1
 
       - name: Check other flags are parsed 🧪
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v5
         with:
           # we have already installed all dependencies above
           install: false
           command: node ./bin run --passing 3 --spec '**/spec.js'
 
       - name: Check --failing 🧪
-        uses: cypress-io/github-action@v2
+        uses: cypress-io/github-action@v5
         with:
           # we have already installed all dependencies above
           install: false
-          command: node ./bin run --passing 1 --failing 1 --config integrationFolder=cypress/failing
+          command: node ./bin run --passing 1 --failing 1 --config specPattern=cypress/failing/spec.js
 
       - name: --expect example 1 💎
         run: npm run test:expect:1
@@ -50,7 +50,8 @@ jobs:
         run: npm run test:exactly:1
 
       - name: Semantic Release 🚀
-        uses: cycjimmy/semantic-release-action@v2
+        if: github.ref == 'refs/heads/main'
+        uses: cycjimmy/semantic-release-action@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

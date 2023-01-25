@@ -1,7 +1,13 @@
 {
-  "should have all expected tests": {
-    "passes": "passing",
-    "is pending": "pending"
-  },
-  "works": "pending"
+  "cypress": {
+    "all-matched": {
+      "spec.js": {
+        "should have all expected tests": {
+          "passes": "passing",
+          "is pending": "pending"
+        },
+        "works": "pending"
+      }
+    }
+  }
 }

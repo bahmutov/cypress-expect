@@ -1,7 +1,7 @@
 name: ci
 on: push
 jobs:
-  test:
+  test-numbers:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout 🛎
@@ -35,6 +35,17 @@ jobs:
           install: false
           command: node ./bin run --passing 1 --failing 1 --config specPattern=cypress/failing/spec.js
 
+  test-expect:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v3
+
+      - name: Install dependencies 📦
+        uses: cypress-io/github-action@v5
+        with:
+          runTests: false
+
       - name: --expect example 1 💎
         run: npm run test:expect:1
 
@@ -45,9 +56,33 @@ jobs:
       - name: --expect example 3 💎
         run: npm run test:expect:3
 
+  test-expect-exactly:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v3
+
+      - name: Install dependencies 📦
+        uses: cypress-io/github-action@v5
+        with:
+          runTests: false
+
       # for https://github.com/bahmutov/cypress-expect/issues/43
       - name: --expect-exactly example 1 💎
         run: npm run test:exactly:1
+
+  release:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: [test-numbers, test-expect, test-expect-exactly]
+    steps:
+      - name: Checkout 🛎
+        uses: actions/checkout@v3
+
+      - name: Install dependencies 📦
+        uses: cypress-io/github-action@v5
+        with:
+          runTests: false
 
       - name: Semantic Release 🚀
         if: github.ref == 'refs/heads/main'

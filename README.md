@@ -48,13 +48,19 @@ describe('1 passing 1 failing', () => {
 })
 ```
 
-You can list the expected test results in a JSON file, for example see [cypress/failing/expected.json](./cypress/failing/expected.json)
+You can list the expected test results in a JSON file, for example see [cypress/failing/expected.json](./cypress/failing/expected.json). The file should show the structure of the spec:
 
 ```json
 {
-  "1 passing 1 failing": {
-    "passes": "passed",
-    "fails": "fail"
+  "cypress": {
+    "failing": {
+      "spec.js": {
+        "1 passing 1 failing": {
+          "passes": "passed",
+          "fails": "fail"
+        }
+      }
+    }
   }
 }
 ```

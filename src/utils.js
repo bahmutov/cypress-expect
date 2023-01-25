@@ -1,6 +1,7 @@
 // @ts-check
 
 const fs = require('fs')
+const path = require('path')
 const R = require('ramda')
 const allPaths = require('@bahmutov/all-paths')
 const debug = require('debug')('cypress-expect')
@@ -114,6 +115,7 @@ const expectTestResults = (args) => (runResults) => {
           // from the outer suite title, all the way to the test title
           title: testResult.title,
           state: testResult.state,
+          relative: runResult.spec.relative,
         })
       })
     })
@@ -124,7 +126,8 @@ const expectTestResults = (args) => (runResults) => {
     let didNotMatch = 0
 
     tests.forEach((test) => {
-      const expectedTestStatus = R.path(test.title, expectedTestStatuses)
+      const fullTestPath = test.relative.split(path.sep).concat(test.title)
+      const expectedTestStatus = R.path(fullTestPath, expectedTestStatuses)
 
       if (!expectedTestStatus) {
         debug('missing expected state for test "%o"', test.title)
@@ -143,11 +146,11 @@ const expectTestResults = (args) => (runResults) => {
         // let's remove it - by the end of the matching the "expected"
         // object will only have expected test results that were NOT
         // present in the test results
-        expectedTestStatuses = R.dissocPath(test.title, expectedTestStatuses)
+        expectedTestStatuses = R.dissocPath(fullTestPath, expectedTestStatuses)
 
         const normalized = normalizeTestState(expectedTestStatus)
         debug(
-          'test "%s" should status "%s"',
+          'test "%s" should have status "%s"',
           test.title.join(' / '),
           normalized,
         )
@@ -205,21 +208,24 @@ const expectTestResults = (args) => (runResults) => {
           // from the outer suite title, all the way to the test title
           title: testResult.title,
           state: testResult.state,
+          relative: runResult.spec.relative,
         })
       })
     })
-    debug('test results %o', tests)
+    debug('test results')
+    debug(tests)
 
     // match every test result with expected test result
     let didNotMatch = 0
 
     tests.forEach((test) => {
-      const expectedTestStatus = R.path(test.title, expectedTestStatuses)
+      const fullTestPath = test.relative.split(path.sep).concat(test.title)
+      const expectedTestStatus = R.path(fullTestPath, expectedTestStatuses)
 
       if (!expectedTestStatus) {
         console.error(
           'cypress-expect: missing expected result for test "%s" from file %s',
-          test.title.join(' / '),
+          fullTestPath.join(' / '),
           args['--expect-exactly'],
         )
         console.error('')
@@ -229,11 +235,11 @@ const expectTestResults = (args) => (runResults) => {
         // let's remove it - by the end of the matching the "expected"
         // object will only have expected test results that were NOT
         // present in the test results
-        expectedTestStatuses = R.dissocPath(test.title, expectedTestStatuses)
+        expectedTestStatuses = R.dissocPath(fullTestPath, expectedTestStatuses)
 
         const normalized = normalizeTestState(expectedTestStatus)
         debug(
-          'test "%s" should status "%s"',
+          'test "%s" should have status "%s"',
           test.title.join(' / '),
           normalized,
         )

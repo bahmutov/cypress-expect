@@ -148,7 +148,7 @@ const expectTestResults = (args) => (runResults) => {
 
         const normalized = normalizeTestState(expectedTestStatus)
         debug(
-          'test "%s" should status "%s"',
+          'test "%s" should have status "%s"',
           test.title.join(' / '),
           normalized,
         )
@@ -233,11 +233,11 @@ const expectTestResults = (args) => (runResults) => {
         // let's remove it - by the end of the matching the "expected"
         // object will only have expected test results that were NOT
         // present in the test results
-        expectedTestStatuses = R.dissocPath(test.title, expectedTestStatuses)
+        expectedTestStatuses = R.dissocPath(fullTestPath, expectedTestStatuses)
 
         const normalized = normalizeTestState(expectedTestStatus)
         debug(
-          'test "%s" should status "%s"',
+          'test "%s" should have status "%s"',
           test.title.join(' / '),
           normalized,
         )

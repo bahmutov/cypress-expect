@@ -115,6 +115,7 @@ const expectTestResults = (args) => (runResults) => {
           // from the outer suite title, all the way to the test title
           title: testResult.title,
           state: testResult.state,
+          relative: runResult.spec.relative,
         })
       })
     })
@@ -125,7 +126,8 @@ const expectTestResults = (args) => (runResults) => {
     let didNotMatch = 0
 
     tests.forEach((test) => {
-      const expectedTestStatus = R.path(test.title, expectedTestStatuses)
+      const fullTestPath = test.relative.split(path.sep).concat(test.title)
+      const expectedTestStatus = R.path(fullTestPath, expectedTestStatuses)
 
       if (!expectedTestStatus) {
         debug('missing expected state for test "%o"', test.title)
@@ -144,7 +146,7 @@ const expectTestResults = (args) => (runResults) => {
         // let's remove it - by the end of the matching the "expected"
         // object will only have expected test results that were NOT
         // present in the test results
-        expectedTestStatuses = R.dissocPath(test.title, expectedTestStatuses)
+        expectedTestStatuses = R.dissocPath(fullTestPath, expectedTestStatuses)
 
         const normalized = normalizeTestState(expectedTestStatus)
         debug(

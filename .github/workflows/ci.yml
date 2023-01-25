@@ -33,7 +33,7 @@ jobs:
         with:
           # we have already installed all dependencies above
           install: false
-          command: node ./bin run --passing 1 --failing 1 --config integrationFolder=cypress/failing
+          command: node ./bin run --passing 1 --failing 1 --config specPattern='cypress/failing/spec.js'
 
       - name: --expect example 1 💎
         run: npm run test:expect:1

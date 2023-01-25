@@ -16,6 +16,7 @@
     "test:expect:2": "node ./bin run --expect ./cypress/failing/expected.json --config specPattern='cypress/failing/spec.js'",
     "test:expect:3": "node ./bin run --expect ./cypress/all-matched/expected.json --config specPattern='cypress/all-matched/spec.js'",
     "test:exactly:1": "node ./bin run --expect-exactly ./cypress/e2e/expected.json",
+    "test:empty": "node ./bin run --config specPattern='cypress/empty-specs/*.js' --expect-exactly ./cypress/empty-specs/expected.json",
     "badges": "npx -p dependency-version-badge update-badge cypress"
   },
   "repository": {

@@ -87,6 +87,22 @@ cypress-expect: expected the find the following tests
 
 When using `--expect <filename>` option, the test run might have _extra_ passing test results. When using `--expect-exactly <filename>` option, the test run cannot have _any_ additional test results. All tests results must match exactly what is listed in the file.
 
+#### Empty specs
+
+Sometimes a spec is empty, or all tests were filtered out. In this case, the exact expected result should have an empty object, see the "empty-specs" tests
+
+```json
+{
+  "cypress": {
+    "empty-specs": {
+      "empty.js": {}
+    }
+  }
+}
+```
+
+If the expected empty object is missing, then the empty spec should not run.
+
 ## Debugging
 
 Run this script with environment variable `DEBUG=cypress-expect` to see verbose logs

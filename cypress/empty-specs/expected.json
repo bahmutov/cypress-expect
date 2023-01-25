@@ -1,0 +1,10 @@
+{
+  "cypress": {
+    "empty-specs": {
+      "empty.js": {},
+      "spec.js": {
+        "works": "pass"
+      }
+    }
+  }
+}

@@ -202,6 +202,23 @@ const expectTestResults = (args) => (runResults) => {
     // collect every test result reported by Cypress
     const tests = []
     runResults.runs.forEach((runResult) => {
+      if (runResult.tests.length === 0) {
+        debug('empty tests for %s', runResult.spec.relative)
+        // check the expected tests object for {} for this spec file
+        const expectedTestStatus = R.path(
+          runResult.spec.relative.split(path.sep),
+          expectedTestStatuses,
+        )
+        if (JSON.stringify(expectedTestStatus) !== '{}') {
+          console.error(
+            `cypress-expect: Found expected tests for empty spec "${runResult.spec.relative}"`,
+          )
+          process.exit(1)
+        } else {
+          debug('found an empty expected object, empty spec ok')
+        }
+      }
+
       runResult.tests.forEach((testResult) => {
         tests.push({
           // title is an array with strings

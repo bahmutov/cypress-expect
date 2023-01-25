@@ -1,6 +1,12 @@
 {
-  "1 passing 1 failing": {
-    "passes": "passed",
-    "fails": "fail"
+  "cypress": {
+    "failing": {
+      "spec.js": {
+        "1 passing 1 failing": {
+          "passes": "passed",
+          "fails": "fail"
+        }
+      }
+    }
   }
 }

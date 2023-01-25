@@ -1,7 +1,13 @@
 {
-  "cypress-expect": {
-    "first": "passing",
-    "second": "passing",
-    "third": "passing"
+  "cypress": {
+    "e2e": {
+      "spec.js": {
+        "cypress-expect": {
+          "first": "passing",
+          "second": "passing",
+          "third": "passing"
+        }
+      }
+    }
   }
 }

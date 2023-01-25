@@ -1,6 +1,7 @@
 // @ts-check
 
 const fs = require('fs')
+const path = require('path')
 const R = require('ramda')
 const allPaths = require('@bahmutov/all-paths')
 const debug = require('debug')('cypress-expect')
@@ -205,21 +206,24 @@ const expectTestResults = (args) => (runResults) => {
           // from the outer suite title, all the way to the test title
           title: testResult.title,
           state: testResult.state,
+          relative: runResult.spec.relative,
         })
       })
     })
-    debug('test results %o', tests)
+    debug('test results')
+    debug(tests)
 
     // match every test result with expected test result
     let didNotMatch = 0
 
     tests.forEach((test) => {
-      const expectedTestStatus = R.path(test.title, expectedTestStatuses)
+      const fullTestPath = test.relative.split(path.sep).concat(test.title)
+      const expectedTestStatus = R.path(fullTestPath, expectedTestStatuses)
 
       if (!expectedTestStatus) {
         console.error(
           'cypress-expect: missing expected result for test "%s" from file %s',
-          test.title.join(' / '),
+          fullTestPath.join(' / '),
           args['--expect-exactly'],
         )
         console.error('')

@@ -112,7 +112,7 @@ if (isPassingSpecified && isMinPassingSpecified) {
 
 if (isExpectSpecified) {
   const filename = args['--expect']
-  if (!fs.existsSync(filename)) {
+  if (filename && !fs.existsSync(filename)) {
     console.error('Cannot find file specified using --expect option')
     console.error('filename: "%s"', filename)
     console.error(cliHelpMessage)
@@ -122,7 +122,7 @@ if (isExpectSpecified) {
 
 if (isExpectExactlySpecified) {
   const filename = args['--expect-exactly']
-  if (!fs.existsSync(filename)) {
+  if (filename && !fs.existsSync(filename)) {
     console.error('Cannot find file specified using --expect-exactly option')
     console.error('filename: "%s"', filename)
     console.error(cliHelpMessage)

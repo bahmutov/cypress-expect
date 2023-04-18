@@ -1,4 +1,4 @@
-# cypress-expect [![ci status][ci image]][ci url] [![renovate-app badge][renovate-badge]][renovate-app] ![cypress version](https://img.shields.io/badge/cypress-12.9.0-brightgreen)
+# cypress-expect [![ci status][ci image]][ci url] [![renovate-app badge][renovate-badge]][renovate-app] ![cypress version](https://img.shields.io/badge/cypress-12.10.0-brightgreen)
 
 > Cypress CLI wrapper where you can specify the total number of expected tests. Read [Wrap Cypress Using NPM Module API](https://glebbahmutov.com/blog/wrap-cypress-using-npm/) and [Cypress Metaprogramming](https://glebbahmutov.com/blog/cy-metaprogramming/)
 

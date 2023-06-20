@@ -35,7 +35,7 @@
   "homepage": "https://github.com/bahmutov/cypress-expect#readme",
   "devDependencies": {
     "@types/node": "14.10.1",
-    "cypress": "12.14.0",
+    "cypress": "12.15.0",
     "prettier": "2.8.3",
     "semantic-release": "^20.0.4"
   },

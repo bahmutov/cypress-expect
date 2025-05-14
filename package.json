@@ -42,7 +42,7 @@
   "dependencies": {
     "@bahmutov/all-paths": "1.0.2",
     "arg": "5.0.2",
-    "debug": "4.4.0",
+    "debug": "4.4.1",
     "ramda": "0.27.1"
   },
   "peerDependencies": {
